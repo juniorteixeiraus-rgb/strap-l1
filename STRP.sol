@@ -51,9 +51,10 @@ contract STRP {
     }
 
     // ── ERC-20 required view functions ───────────────────────────────────
-    function name()  external pure returns (string memory) { return _name;  }
-    function symbol() external pure returns (string memory) { return _symbol; }
-    function decimals() external pure returns (uint8) { return _decimals; }
+    function name()      external view returns (string memory) { return _name;  }
+    function symbol()    external view returns (string memory) { return _symbol; }
+    function decimals()  external view returns (uint8)         { return _decimals; }
+    function totalSupply() external view returns (uint256)     { return _totalSupply; }
     function totalSupply() external view returns (uint256) { return _totalSupply; }
 
     function balanceOf(address account) external view returns (uint256) {
