@@ -1,26 +1,25 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-/**
- * StrAP ($STP) Token — ERC-20 on Base (Coinbase L2)
- * 
- * Token:      StrAP
+/**\n * $Strap ($STP) Token — ERC-20 on Base (Coinbase L2)
+ *
+ * Token:      $Strap
  * Symbol:     $STP
  * Supply:     1,000,000,000 $STP (1 billion)
  * Decimals:   18
- * 
+ *
  * Deployment:
  *   Remix → Compile 0.8.20 → Deploy via Injected Provider (MetaMask on Base)
  *   Verify on Basescan → Add liquidity on Aerodrome
- * 
+ *
  * Networks:
  *   Base Mainnet:  chainId 8453, RPC https://mainnet.base.org
  *   Base Sepolia:  chainId 84531, RPC https://sepolia.base.org (testnet)
  */
 
-contract StrAP {
+contract $Strap {
 
-    string private _name = "StrAP";
+    string private _name = "$Strap";
     string private _symbol = "$STP";
     uint8  private _decimals = 18;
     uint256 private _totalSupply = 0;
@@ -37,10 +36,10 @@ contract StrAP {
         emit Transfer(address(0), msg.sender, _totalSupply);
     }
 
-    function name()  external pure returns (string memory) { return _name;  }
-    function symbol() external pure returns (string memory) { return _symbol; }
-    function decimals() external pure returns (uint8) { return _decimals; }
-    function totalSupply() external view returns (uint256) { return _totalSupply; }
+    function name()      external view returns (string memory) { return _name;  }
+    function symbol()    external view returns (string memory) { return _symbol; }
+    function decimals()  external view returns (uint8)         { return _decimals; }
+    function totalSupply() external view returns (uint256)     { return _totalSupply; }
 
     function balanceOf(address account) external view returns (uint256) {
         return _balances[account];
