@@ -1,0 +1,30 @@
+CMAKE_TOOLCHAIN_FILE_x86_64-unknown-linux-gnu = None
+CMAKE_TOOLCHAIN_FILE_x86_64_unknown_linux_gnu = None
+HOST_CMAKE_TOOLCHAIN_FILE = None
+CMAKE_TOOLCHAIN_FILE = None
+CMAKE_GENERATOR_x86_64-unknown-linux-gnu = None
+CMAKE_GENERATOR_x86_64_unknown_linux_gnu = None
+HOST_CMAKE_GENERATOR = None
+CMAKE_GENERATOR = None
+CMAKE_PREFIX_PATH_x86_64-unknown-linux-gnu = None
+CMAKE_PREFIX_PATH_x86_64_unknown_linux_gnu = None
+HOST_CMAKE_PREFIX_PATH = None
+CMAKE_PREFIX_PATH = None
+CMAKE_x86_64-unknown-linux-gnu = None
+CMAKE_x86_64_unknown_linux_gnu = None
+HOST_CMAKE = None
+CMAKE = None
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/strap-l1/target/release/build/strap-59f4aff0a10cf0a3/out/build
+Consolidate compiler generated dependencies of target strap-pouw
+[ 50%] Building CXX object CMakeFiles/strap-pouw.dir/strap-pouw.cpp.o
+[100%] Linking CXX static library libstrap-pouw.a
+[100%] Built target strap-pouw
+cargo:root=/home/ubuntu/strap-l1/target/release/build/strap-59f4aff0a10cf0a3/out
+cargo:rustc-link-search=native=/home/ubuntu/strap-l1/target/release/build/strap-59f4aff0a10cf0a3/out/build
+cargo:rustc-link-lib=static=strap-pouw
+cargo:rustc-link-lib=dylib=ssl
+cargo:rustc-link-lib=dylib=crypto
+cargo:rerun-if-changed=src/pouw/strap-pouw.cpp
+cargo:rerun-if-changed=src/pouw/CMakeLists.txt

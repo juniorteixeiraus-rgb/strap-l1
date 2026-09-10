@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strap L1 — STRP Ecosystem Dashboard</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --border: #1f2937;
+    --accent: #f59e0b;
+    --accent2: #3b82f6;
+    --accent3: #10b981;
+    --accent4: #8b5cf6;
+    --text: #f3f4f6;
+    --dim: #6b7280;
+    --danger: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; background: var(--card); border-radius: 12px;
+    border: 1px solid var(--border); margin-bottom: 24px;
+  }
+  .header h1 { font-size: 24px; display: flex; align-items: center; gap: 10px; }
+  .logo { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--accent4)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #fff; font-size: 18px; }
+  .header .subtitle { color: var(--dim); font-size: 14px; }
+  .header .supply-badge {
+    background: linear-gradient(135deg, var(--accent2), var(--accent4));
+    padding: 8px 16px; border-radius: 20px; color: #fff; font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* Stats row */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; text-align: center;
+  }
+  .stat-card .label { color: var(--dim); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .stat-card .value { font-size: 28px; font-weight: 700; }
+  .stat-card .change { font-size: 12px; color: var(--accent3); margin-top: 4px; }
+
+  /* Section */
+  .section { margin-bottom: 24px; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 20px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px 10px 0 0; cursor: pointer;
+  }
+  .section-header h2 { font-size: 16px; }
+  .section-header .toggle { color: var(--accent); font-size: 20px; }
+  .section-body {
+    background: var(--card); border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 10px 10px; padding: 20px; display: none;
+  }
+  .section-body.open { display: block; }
+
+  /* Grid layouts */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  /* Allocation chart */
+  .allocation-list { display: flex; flex-direction: column; gap: 12px; }
+  .alloc-row { display: flex; align-items: center; gap: 12px; }
+  .alloc-color { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+  .alloc-info { flex: 1; }
+  .alloc-info .name { font-size: 14px; font-weight: 500; }
+  .alloc-info .detail { font-size: 12px; color: var(--dim); }
+  .alloc-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+  .alloc-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+  .alloc-pct { font-size: 14px; font-weight: 600; width: 60px; text-align: right; }
+  .alloc-amt { font-size: 14px; width: 120px; text-align: right; color: var(--dim); }
+
+  /* Balances table */
+  .table { width: 100%; border-collapse: collapse; }
+  .table th, .table td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .table th { color: var(--dim); font-weight: 500; font-size: 12px; text-transform: uppercase; }
+  .table td { font-family: 'Courier New', monospace; font-size: 13px; }
+  .table tr:hover { background: rgba(255,255,255,0.02); }
+
+  /* Chain info */
+  .chain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .chain-item { background: var(--bg); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); }
+  .chain-item .k { font-size: 11px; color: var(--dim); text-transform: uppercase; }
+  .chain-item .v { font-size: 14px; font-family: 'Courier New', monospace; margin-top: 4px; word-break: break-all; }
+
+  /* Agents */
+  .agent-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .agent-card {
+    background: var(--bg); padding: 16px; border-radius: 10px; border: 1px solid var(--border);
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  .agent-card:hover { border-color: var(--accent2); }
+  .agent-card .name { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .agent-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent3); }
+  .agent-card .role { font-size: 11px; color: var(--dim); text-transform: uppercase; margin: 4px 0; }
+  .agent-card .model { font-size: 12px; color: var(--accent2); font-family: 'Courier New', monospace; }
+  .agent-card .desc { font-size: 13px; color: var(--dim); margin-top: 6px; }
+
+  /* Chat */
+  .chat-box { display: flex; flex-direction: column; gap: 12px; }
+  .chat-msg { padding: 12px 16px; border-radius: 12px; max-width: 80%; }
+  .chat-msg.user { background: var(--accent2); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .chat-msg.agent { background: var(--card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .chat-msg .agent-name { font-size: 11px; color: var(--accent2); font-weight: 600; margin-bottom: 4px; }
+  .chat-msg .content { font-size: 14px; line-height: 1.5; }
+  .chat-input-row { display: flex; gap: 8px; }
+  .chat-input { flex: 1; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; outline: none; }
+  .chat-input:focus { border-color: var(--accent2); }
+  .chat-send { padding: 10px 18px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
+  .chat-send:hover { opacity: 0.9; }
+
+  /* Buttons */
+  .btn {
+    padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;
+    font-size: 14px; font-weight: 600; transition: opacity 0.2s; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary { background: var(--accent2); color: #fff; }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-accent { background: var(--accent); color: #fff; }
+  .btn-accent:hover { opacity: 0.9; }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline:hover { border-color: var(--accent2); }
+
+  .action-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+
+  /* Tokens */
+  .token-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .token-row:last-child { border-bottom: none; }
+  .token-info { display: flex; align-items: center; gap: 10px; }
+  .token-icon { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent4)); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; color: #fff; }
+  .token-name { font-weight: 600; }
+  .token-symbol { color: var(--dim); font-size: 13px; }
+  .token-balance { font-family: 'Courier New', monospace; font-size: 18px; font-weight: 700; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .header { flex-direction: column; gap: 12px; align-items: flex-start; }
+    .stat-card .value { font-size: 22px; }
+  }
+
+  .loading { color: var(--dim); font-style: italic; }
+  .error { color: var(--danger); font-size: 13px; margin-top: 8px; }
+  .success { color: var(--accent3); font-size: 13px; margin-top: 8px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <h1><div class="logo">S</div> Strap L1 — STRP Ecosystem</h1>
+      <div class="subtitle">Proof-of-Useful-Work Blockchain · 1,000,000,000 STRP</div>
+    </div>
+    <div class="supply-badge" id="liveSupply">Loading...</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" id="statsGrid">
+    <div class="stat-card"><div class="label">Total Supply</div><div class="value" id="statTotal">--</div><div class="change">1 billion STRP</div></div>
+    <div class="stat-card"><div class="label">Circulating</div><div class="value" id="statCirculating">--</div><div class="change" id="statCircPct">--</div></div>
+    <div class="stat-card"><div class="label">Treasury</div><div class="value" id="statTreasury">--</div><div class="change">Ecosystem fund</div></div>
+    <div class="stat-card"><div class="label">Block Height</div><div class="value" id="statBlocks">--</div><div class="change" id="statLastHash">--</div></div>
+    <div class="stat-card"><div class="label">AI Agents</div><div class="value" id="statAgents">--</div><div class="change">7 active</div></div>
+  </div>
+
+  <!-- Token -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2><span>🪙</span> STRP Token</h2>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="token-row">
+        <div class="token-info">
+          <div class="token-icon">S</div>
+          <div>
+            <div class="token-name">Strap</div>
+            <div class="token-symbol">STRP · 18 decimals · PoUW Utility Token</div>
+          </div>
+        </div>
+        <div class="token-balance" id="tokenBalance">-- STRP</div>
+      </div>
+      <div style="margin-top:16px">
+        <button class="btn btn-accent" onclick="initChain()">⚡ Initialize Chain</button>
+        <button class="btn btn-primary" onclick="fetchBalances()">🔄 Refresh Balances</button>
+      </div>
+      <div id="initStatus"></div>
+    </div>
+  </div>
+
+  <!-- Allocation -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2><span>📊</span> Token Allocation (1,000,000,000 STRP)</h2>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="allocation-list" id="allocList"></div>
+    </div>
+  </div>
+
+  <!-- Chain Info + Balances -->
+  <div class="grid-2">
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2><span>⛓️</span> Chain Info</h2>
+        <span class="toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <div class="chain-grid" id="chainGrid">
+          <div class="chain-item"><div class="k">Blocks</div><div class="v" id="ciBlocks">--</div></div>
+          <div class="chain-item"><div class="k">Total Supply</div><div class="v" id="ciSupply">--</div></div>
+          <div class="chain-item"><div class="k">Treasury</div><div class="v" id="ciTreasury">--</div></div>
+          <div class="chain-item"><div class="k">Latest Hash</div><div class="v" id="ciHash">--</div></div>
+          <div class="chain-item"><div class="k">Symbol</div><div class="v" id="ciSymbol">--</div></div>
+          <div class="chain-item"><div class="k">Genesis Owner</div><div class="v" id="ciOwner">--</div></div>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-outline" onclick="fetchChainInfo()">🔄 Refresh</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2><span>💰</span> Balances</h2>
+        <span class="toggle">▼</span>
+      </div>
+      <div class="section-body">
+        <table class="table">
+          <thead><tr><th>Address</th><th>Balance (STRP)</th><th>Stake</th></tr></thead>
+          <tbody id="balancesBody"><tr><td colspan="3" class="loading">Click "Refresh Balances" to load</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agents -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2><span>🤖</span> AI Agent Team (7 Agents · OpenRouter)</h2>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="agent-grid" id="agentGrid"></div>
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="fetchAgents()">🔄 Refresh Agents</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat with Agents -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2><span>💬</span> Chat with the Agent Team</h2>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="chat-box" id="chatBox">
+        <div class="chat-msg agent">
+          <div class="agent-name">Strap System</div>
+          <div class="content">Welcome to the Strap L1 ecosystem! Ask me anything about the chain, tokens, mining, or the AI agents. Try: "What is PoUW?" or "Start mining" or "Show me the token distribution."</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Ask the Strap agents anything..." onkeypress="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">Send</button>
+      </div>
+      <div id="chatStatus"></div>
+      <div class="action-row" style="margin-top:12px">
+        <select id="chatAgent" class="chat-input" style="flex:1">
+          <option value="team">🤝 All Agents (team)</option>
+          <option value="mark">👑 Mark (orchestrator)</option>
+          <option value="sheylla">🎨 Sheylla (creative)</option>
+          <option value="billie">📊 Billie (analysis)</option>
+          <option value="legative">🧠 Legative (logic)</option>
+          <option value="newbi">🔍 Newbi (research)</option>
+          <option value="nurio">💬 Nurio (assistant)</option>
+        </select>
+        <button class="btn btn-outline" onclick="clearChat()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mine -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h2><span>⛏️</span> PoUW Mining</h2>
+      <span class="toggle">▼</span>
+    </div>
+    <div class="section-body">
+      <p style="color:var(--dim); margin-bottom:12px; font-size:14px;">
+        Proof-of-Useful-Work mining: perform real activities (like a <strong>Bang-jump</strong> across a 10m bridge) and earn STRP rewards.
+        Block mining earns 10 STRP/block; activity proofs earn 30-50 STRP.
+      </p>
+      <div class="action-row">
+        <button class="btn btn-accent" onclick="startMining()">⛏️ Start Mining (10 blocks)</button>
+        <button class="btn btn-primary" onclick="submitProofPrompt()">📝 Submit Activity Proof</button>
+        <button class="btn btn-outline" onclick="fetchChainInfo()">🔄 Refresh Chain</button>
+      </div>
+      <div id="mineStatus"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center; margin-top:32px; padding:16px; color:var(--dim); font-size:12px; border-top:1px solid var(--border);">
+    Strap L1 · Proof-of-Useful-Work · 1,000,000,000 STRP · Built with Rust + C++ + OpenRouter AI
+  </div>
+
+</div>
+
+<script>
+// ── Allocation data ──────────────────────────────────────────────
+const ALLOCATIONS = [
+  { name: "Genesis Founder",      pct: 15, color: "#f59e0b", purpose: "Initial owner (strap-founder)" },
+  { name: "PoUW Mining Rewards",  pct: 35, color: "#3b82f6", purpose: "Released via proof mining over time" },
+  { name: "Ecosystem & Dev",      pct: 20, color: "#10b981", purpose: "Treasury-controlled, community governance" },
+  { name: "Community Airdrop",    pct: 10, color: "#8b5cf6", purpose: "Distributed to early participants" },
+  { name: "Staking Rewards Pool", pct: 10, color: "#ec4899", purpose: "For STRP stakers securing the network" },
+  { name: "Liquidity & Exchange", pct:  5, color: "#14b8a6", purpose: "DEX/CEX listing liquidity" },
+  { name: "AI Agent Rewards",     pct:  5, color: "#f97316", purpose: "Reserved for the 7-agent AI system" },
+];
+
+const TOTAL_SUPPLY = 1_000_000_000;
+
+function renderAllocations() {
+  const list = document.getElementById("allocList");
+  list.innerHTML = ALLOCATIONS.map(a => {
+    const tokens = Math.floor(TOTAL_SUPPLY * a.pct / 100);
+    return `
+      <div class="alloc-row">
+        <div class="alloc-color" style="background:${a.color}"></div>
+        <div class="alloc-info">
+          <div class="name">${a.name}</div>
+          <div class="detail">${a.purpose}</div>
+        </div>
+        <div class="alloc-bar"><div class="alloc-bar-fill" style="width:${a.pct}%;background:${a.color}"></div></div>
+        <div class="alloc-pct">${a.pct}%</div>
+        <div class="alloc-amt">${tokens.toLocaleString()} STRP</div>
+      </div>
+    `;
+  }).join("");
+}
+
+// ── Section toggle ───────────────────────────────────────────────
+function toggleSection(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle("open");
+  header.querySelector(".toggle").textContent = body.classList.contains("open") ? "▲" : "▼";
+}
+
+// ── API helpers ───────────────────────────────────────────────────
+async function api(path, opts = {}) {
+  try {
+    const res = await fetch(path, { ...opts, headers: { "Content-Type": "application/json", ...opts.headers } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (e) {
+    console.error("API error:", e);
+    return null;
+  }
+}
+
+// ── Init chain ────────────────────────────────────────────────────
+async function initChain() {
+  const status = document.getElementById("initStatus");
+  status.innerHTML = '<div class="loading">Initializing Strap chain...</div>';
+  try {
+    const res = await fetch("/strap/init", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ supply: TOTAL_SUPPLY, owner: "strap-founder", symbol: "STRP", reward: 50 }) });
+    const data = await res.json();
+    if (data.output || data.status === "ok") {
+      status.innerHTML = '<div class="success">✅ Chain initialized! Refresh to see data.</div>';
+      setTimeout(() => { fetchChainInfo(); fetchBalances(); }, 1500);
+    } else {
+      status.innerHTML = `<div class="error">${data.error || "Init failed"}</div>`;
+    }
+  } catch (e) {
+    status.innerHTML = `<div class="error">Init failed: ${e.message} (is the API running?)</div>`;
+  }
+}
+
+// ── Chain info ────────────────────────────────────────────────────
+async function fetchChainInfo() {
+  const data = await api("/strap/chain");
+  if (!data) { setChainPlaceholders(); return; }
+  if (data.error) {
+    document.getElementById("chainGrid").querySelectorAll(".v").forEach(el => el.textContent = "—");
+    return;
+  }
+  // Parse output from strap CLI
+  const out = data.output || "";
+  const blocksMatch = out.match(/Blocks:\s*(\d+)/);
+  const supplyMatch = out.match(/Total supply:\s*([\d,]+)\s*STRP/);
+  const treasuryMatch = out.match(/Treasury:\s*([\d,]+)\s*STRP/);
+  const hashSection = out.match(/Latest hash:\s*([a-f0-9]+)/);
+
+  document.getElementById("ciBlocks").textContent = blocksMatch ? blocksMatch[1] : "--";
+  document.getElementById("ciSupply").textContent = supplyMatch ? supplyMatch[1].replace(/,/g,"") + " STRP" : "--";
+  document.getElementById("ciTreasury").textContent = treasuryMatch ? treasuryMatch[1].replace(/,/g,"") + " STRP" : "--";
+  document.getElementById("ciHash").textContent = hashSection ? hashSection[1] : "--";
+  document.getElementById("ciSymbol").textContent = "STRP";
+  document.getElementById("ciOwner").textContent = "strap-founder";
+
+  // Update stats
+  document.getElementById("statBlocks").textContent = blocksMatch ? blocksMatch[1] : "--";
+  document.getElementById("statLastHash").textContent = hashSection ? hashSection[1].slice(0,16)+"..." : "--";
+}
+
+function setChainPlaceholders() {
+  ["ciBlocks","ciSupply","ciTreasury","ciHash","ciSymbol","ciOwner"].forEach(id => {
+    document.getElementById(id).textContent = "—";
+  });
+}
+
+// ── Balances ──────────────────────────────────────────────────────
+async function fetchBalances() {
+  const data = await api("/strap/balances");
+  const tbody = document.getElementById("balancesBody");
+  if (!data || data.error) {
+    tbody.innerHTML = `<tr><td colspan="3" class="error">${data?.error || "No data — initialize chain first"}</td></tr>`;
+    return;
+  }
+  const out = data.output || "";
+  // Parse: "  <addr8>: <balance> STRP (stake: <stake>)"
+  const lines = out.split("\n").filter(l => l.trim() && !l.includes("═══") && !l.includes("Treasury") && !l.includes("Total supply"));
+  let html = "";
+  let totalBalance = 0n;
+  for (const line of lines) {
+    const m = line.match(/^\s+([a-f0-9]{8,}):[\s]*([\d,]+)\s*STRP\s*(?:\(stake:\s*([\d,]+)\))?/);
+    if (m) {
+      const bal = BigInt(m[2].replace(/,/g,""));
+      totalBalance += bal;
+      html += `<tr><td>${m[1]}</td><td>${Number(bal).toLocaleString()} STRP</td><td>${m[3] ? Number(m[3].replace(/,/g,"")).toLocaleString() : "0"}</td></tr>`;
+    }
+  }
+  // Add treasury row
+  const treasuryMatch = out.match(/Treasury:\s*([\d,]+)\s*STRP/);
+  if (treasuryMatch) {
+    const tb = BigInt(treasuryMatch[1].replace(/,/g,""));
+    totalBalance += tb;
+    html += `<tr style="color:var(--accent);font-weight:600"><td>Treasury</td><td>${Number(tb).toLocaleString()} STRP</td><td>—</td></tr>`;
+  }
+  tbody.innerHTML = html || `<tr><td colspan="3" class="loading">No balances yet</td></tr>`;
+
+  // Update stats
+  document.getElementById("statCirculating").textContent = totalBalance > 1000n ? Number(totalBalance).toLocaleString() + " STRP" : "—";
+  document.getElementById("statCircPct").textContent = totalBalance > 1000n ? ((Number(totalBalance) / TOTAL_SUPPLY * 100).toFixed(2) + "% of 1B") : "—";
+  document.getElementById("tokenBalance").textContent = totalBalance > 1000n ? Number(totalBalance).toLocaleString() + " STRP" : "—";
+
+  // Live supply badge
+  document.getElementById("liveSupply").textContent = `🔗 ${totalBalance > 1000n ? Number(totalBalance).toLocaleString() : "—"} STRP circulating`;
+}
+
+// ── Agents ────────────────────────────────────────────────────────
+async function fetchAgents() {
+  const data = await api("/agents");
+  const grid = document.getElementById("agentGrid");
+  if (!data || !data.agents) { return; }
+  const agents = data.agents;
+  grid.innerHTML = Object.entries(agents).map(([key, a]) => `
+    <div class="agent-card" onclick="quickChat('${key}', '${a.label}')">
+      <div class="name"><div class="agent-dot"></div>${a.label.split(" — ")[0]}</div>
+      <div class="role">${a.role}</div>
+      <div class="model">${a.model}</div>
+      <div class="desc">${a.description}</div>
+    </div>
+  `).join("");
+  document.getElementById("statAgents").textContent = Object.keys(agents).length;
+}
+
+// ── Chat ──────────────────────────────────────────────────────────
+async function sendChat() {
+  const input = document.getElementById("chatInput");
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = "";
+  appendChat(msg, "user");
+  document.getElementById("chatStatus").innerHTML = '<div class="loading">Thinking...</div>';
+
+  const agent = document.getElementById("chatAgent").value;
+  let path = agent === "team" ? "/agents/team/chat" : `/agents/${agent}/chat`;
+  let body = agent === "team" ? { message: msg } : { message: msg };
+
+  try {
+    const res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const data = await res.json();
+    document.getElementById("chatStatus").innerHTML = "";
+    if (data.text || data.final_answer) {
+      const text = data.final_answer || data.text || JSON.stringify(data);
+      appendChat(text, agent === "team" ? "mark (team)" : agent);
+    } else if (data.error) {
+      appendChat("Error: " + data.error, "system");
+    }
+  } catch (e) {
+    document.getElementById("chatStatus").innerHTML = "";
+    appendChat("API error: " + e.message, "system");
+  }
+}
+
+function appendChat(text, sender) {
+  const box = document.getElementById("chatBox");
+  const div = document.createElement("div");
+  div.className = `chat-msg ${sender.includes("user") ? "user" : sender.includes("system") ? "agent" : "agent"}`;
+  if (sender !== "user") {
+    const nameDiv = document.createElement("div");
+    nameDiv.className = "agent-name";
+    nameDiv.textContent = sender === "mark (team)" ? "👑 Mark (Team Synthesis)" : sender === "system" ? "Strap System" : `🤖 ${sender.charAt(0).toUpperCase() + sender.slice(1)}`;
+    div.appendChild(nameDiv);
+  }
+  const contentDiv = document.createElement("div");
+  contentDiv.className = "content";
+  contentDiv.textContent = text;
+  div.appendChild(contentDiv);
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function clearChat() {
+  document.getElementById("chatBox").innerHTML = `
+    <div class="chat-msg agent">
+      <div class="agent-name">Strap System</div>
+      <div class="content">Chat cleared. How can I help?</div>
+    </div>
+  `;
+}
+
+function quickChat(label, fullLabel) {
+  document.getElementById("chatAgent").value = label;
+  document.getElementById("chatInput").value = `Tell me about yourself — you are ${fullLabel}`;
+  sendChat();
+}
+
+// ── Mining ────────────────────────────────────────────────────────
+async function startMining() {
+  const status = document.getElementById("mineStatus");
+  status.innerHTML = '<div class="loading">Starting PoUW mining (10 blocks)...</div>';
+  try {
+    const res = await fetch("/strap/mine", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "mine 10 blocks", context: "difficulty 2" }) });
+    const data = await res.json();
+    status.innerHTML = "";
+    if (data.text) {
+      appendChat(data.text, "legative");
+      status.innerHTML += '<div class="success">✅ Mining plan generated. Check chain for new blocks.</div>';
+      setTimeout(() => fetchChainInfo(), 2000);
+    }
+  } catch (e) {
+    status.innerHTML = `<div class="error">Mining error: ${e.message}</div>`;
+  }
+}
+
+async function submitProofPrompt() {
+  const activity = prompt("Describe your PoUW activity (e.g., 'Bang-jump 10m bridge at the river'):");
+  if (!activity) return;
+  const status = document.getElementById("mineStatus");
+  status.innerHTML = '<div class="loading">Preparing proof with AI...</div>';
+  try {
+    const res = await fetch("/strap/submit-proof", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: activity }) });
+    const data = await res.json();
+    status.innerHTML = "";
+    if (data.ready_for_chain) {
+      const cli = data.suggested_cli || "";
+      appendChat(`📝 Proof metadata: "${data.metadata}"\nParameters: ${JSON.stringify(data.proof_params)}\nCLI: ${cli}`, "sheylla");
+      status.innerHTML += `<div class="success">✅ Proof prepared! Copy the CLI command above and run it, or click below.</div>`;
+      status.innerHTML += `<button class="btn btn-accent" onclick="runSubmitProof('${activity.replace(/'/g,"\\'")}')">Run on Chain</button>`;
+    }
+  } catch (e) {
+    status.innerHTML = `<div class="error">Proof prep error: ${e.message}</div>`;
+  }
+}
+
+async function runSubmitProof(activity) {
+  const status = document.getElementById("mineStatus");
+  status.innerHTML = '<div class="loading">Submitting proof to chain...</div>';
+  try {
+    const res = await fetch("/strap/submit-proof", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: activity, context: "execute on chain" }) });
+    const data = await res.json();
+    status.innerHTML = "";
+    if (data.ready_for_chain) {
+      appendChat(`✅ Proof submitted on-chain!\nMetadata: "${data.metadata}"`, "mark");
+      status.innerHTML += '<div class="success">Proof recorded on Strap L1!</div>';
+      setTimeout(() => fetchChainInfo(), 1500);
+    }
+  } catch (e) {
+    status.innerHTML = `<div class="error">On-chain submit error — you may need to run the CLI manually.</div>`;
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────
+renderAllocations();
+fetchAgents();
+fetchChainInfo();
+setTimeout(() => fetchBalances(), 500);
+</script>
+</body>
+</html>

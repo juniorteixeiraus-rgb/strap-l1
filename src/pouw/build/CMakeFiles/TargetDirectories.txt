@@ -1,0 +1,3 @@
+/home/ubuntu/strap-l1/src/pouw/build/CMakeFiles/strap-pouw.dir
+/home/ubuntu/strap-l1/src/pouw/build/CMakeFiles/edit_cache.dir
+/home/ubuntu/strap-l1/src/pouw/build/CMakeFiles/rebuild_cache.dir

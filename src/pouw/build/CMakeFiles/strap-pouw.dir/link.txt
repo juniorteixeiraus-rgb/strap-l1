@@ -1,0 +1,2 @@
+/usr/bin/ar qc libstrap-pouw.a CMakeFiles/strap-pouw.dir/strap-pouw.cpp.o
+/usr/bin/ranlib libstrap-pouw.a
