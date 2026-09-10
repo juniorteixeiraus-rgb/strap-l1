@@ -1,0 +1,15 @@
+[project]
+name = "strap-l1"
+version = "0.1.0"
+
+[tool.cargo]
+rustc = "/home/ubuntu/.cargo/bin/rustc"
+
+[tool.ruff]
+line-length = 100
+
+[tool.clippy]
+msrv = "1.98"
+
+[lint]
+ignore = ["E501", "W503"]
