@@ -1,0 +1,24 @@
+# Strap L1 — Git ignore
+target/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.rope/
+.mypy_cache/
+*.egg-info/
+*.so
+*.a
+*.o
+strap-data/
+.strap-data/
+*.log
+/tmp/
+.DS_Store
+.env
+*.env
+*.key
+*.pem
+!contracts/
+!src/
