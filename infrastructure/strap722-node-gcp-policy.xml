@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Policy xmlns="http://accounts.google.com/ServiceAccountPolicy">
+  <ServiceAccountName>strap722-node-sa@903804972035.iam.gserviceaccount.com</ServiceAccountName>
+  <PolicyVersion>2012-10-17</PolicyVersion>
+  <Statement>
+    <Effect>Allow</Effect>
+    <Action>
+      <All>cloud.vmcompute.*</All>
+      <All>cloudstorage.*</All>
+      <All>compute.*</All>
+    </Action>
+    <Resource>
+      <All>projects/903804972035</All>
+    </Resource>
+  </Statement>
+</Policy>
