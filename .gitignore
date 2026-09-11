@@ -20,5 +20,7 @@ strap-data/
 *.env
 *.key
 *.pem
+solana-id.json
+solana-id-community.json
 !contracts/
 !src/
