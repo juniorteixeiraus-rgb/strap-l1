@@ -1,0 +1,61 @@
+{
+  "app_name": "QFit.space",
+  "version": "1.0.0",
+  "description": "AI Chatbot SaaS — $799 Lifetime License on Strap 722 Crypto Network",
+  "pricing": {
+    "lifetime": {
+      "amount": 799,
+      "currency": "USD",
+      "type": "one-time",
+      "features": [
+        "AI Chatbot unlimited conversations",
+        "Local LLM inference (no API costs)",
+        "Private server — data never exposed",
+        "Runs on Strap 722 blockchain (never lost)",
+        "Interconnected AWS VPS infrastructure",
+        "Open-source LLM models (Llama 3, Mistral, Phi-3)",
+        "Multi-user support",
+        "API access for developers",
+        "Custom model uploads",
+        "Analytics dashboard",
+        "Lifetime updates"
+      ]
+    }
+  },
+  "network": {
+    "name": "Strap 722",
+    "blockchain": true,
+    "lhs_protocol": true,
+    "consensus": "7 AI agents × 2 consensus engines × 2 network modes"
+  },
+  "infrastructure": {
+    "cloud_provider": "AWS",
+    "vps_type": "EC2",
+    "region": "us-east-1",
+    "tunnel": "Cloudflare (private SaaS — not public)",
+    "storage": "S3 (encrypted state backup)",
+    "monitoring": "CloudWatch"
+  },
+  "llm": {
+    "engine": "Ollama (local)",
+    "models": [
+      {"name": "llama3", "size": "8B", "description": "Fast, capable general-purpose model"},
+      {"name": "llama3.1", "size": "70B", "description": "Large model for complex tasks"},
+      {"name": "mistral", "size": "7B", "description": "Efficient reasoning model"},
+      {"name": "phi3", "size": "3.8B", "description": "Small, fast model for simple queries"}
+    ],
+    "privacy": "All inference runs locally — no data leaves the server"
+  },
+  "security": {
+    "data_privacy": "Private SaaS — your data never exposed to public internet",
+    "blockchain_securing": "Licenses and transactions recorded on Strap 722 blockchain",
+    "encryption": "AES-256 for all data at rest",
+    "access_control": "License-key gated — only paying customers access the SaaS"
+  },
+  "market": {
+    "target": "US market",
+    "launch_price": 799,
+    "model": "Lifetime license (no recurring fees)",
+    "goal": "Become the go-to private AI chatbot SaaS for businesses"
+  }
+}

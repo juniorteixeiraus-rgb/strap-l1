@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QFit.space — AI Chatbot SaaS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        /* Header */
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5, #f953c6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .tagline {
+            font-size: 1.3rem;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        .price-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00d2ff;
+            margin: 20px 0;
+        }
+        .price-label {
+            font-size: 1rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .feature-card {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00d2ff;
+        }
+        .feature-desc {
+            color: #aaa;
+            line-height: 1.6;
+        }
+        
+        /* Pricing */
+        .pricing-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .pricing-card {
+            background: linear-gradient(135deg, rgba(0,210,255,0.1), rgba(58,123,213,0.1));
+            border: 2px solid #00d2ff;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .pricing-amount {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #00d2ff;
+        }
+        .pricing-period {
+            color: #888;
+            font-size: 1.2rem;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            color: #fff;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,210,255,0.3);
+        }
+        
+        /* Chat Demo */
+        .chat-demo {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        .chat-window {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+        .message.user {
+            background: #3a7bd5;
+            margin-left: auto;
+            text-align: right;
+        }
+        .message.bot {
+            background: #2d2d44;
+            border: 1px solid #444;
+        }
+        .message-content {
+            color: #ddd;
+            line-height: 1.5;
+        }
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: 1px solid #444;
+            background: #2d2d44;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+        .chat-input button {
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* Tech Stack */
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        .tech-item {
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 20px 30px;
+            text-align: center;
+            min-width: 150px;
+        }
+        .tech-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #00d2ff;
+        }
+        .tech-desc {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .price-display { font-size: 2.5rem; }
+            .pricing-card { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>QFit.space</h1>
+            <p class="tagline">Private AI Chatbot SaaS — $799 Lifetime License</p>
+            <p style="color: #888; max-width: 600px; margin: 0 auto;">
+                The AI chatbot that runs on YOUR server. Powered by open-source LLMs, 
+                secured by the Strap 722 blockchain. Your data never leaves your infrastructure.
+            </p>
+            <div class="price-display">$799</div>
+            <div class="price-label">Lifetime — One-Time Payment — No Recurring Fees</div>
+        </header>
+        
+        <!-- Features -->
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <div class="feature-title">AI Chatbot</div>
+                <div class="feature-desc">
+                    Unlimited AI conversations powered by open-source LLMs. 
+                    Llama 3, Mistral, Phi-3 — choose your model.
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-title">Private Infrastructure</div>
+                <div class="feature-desc">
+                    Your data never exposed to the public internet. 
+                    Runs on your private AWS VPS — fully under your control.
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⛓️</div>
+                <div class="feature-title">Blockchain Secured</div>
+                <div class="feature-desc">
+                    Licenses and transactions recorded on Strap 722 blockchain. 
+                    Your work is never lost — immutable forever.
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💻</div>
+                <div class="feature-title">Local LLM Inference</div>
+                <div class="feature-desc">
+                    No API costs, no data leaving your server. 
+                    Ollama-powered local inference — fast and private.
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <div class="feature-title">Interconnected VPS</div>
+                <div class="feature-desc">
+                    Runs on multiple AWS EC2 instances interconnected via 
+                    the LHS network protocol — resilient and scalable.
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Analytics & API</div>
+                <div class="feature-desc">
+                    Full API access for developers. Usage analytics dashboard. 
+                    Multi-user support. Custom model uploads.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat Demo -->
+        <div class="chat-demo">
+            <h2 style="margin-bottom: 20px; color: #00d2ff;">💬 Try the AI Chatbot (Demo)</h2>
+            <div class="chat-window" id="chatWindow">
+                <div class="message bot">
+                    <div class="message-content">
+                        👋 Hello! I'm QFit, your AI assistant on QFit.space. 
+                        I can answer questions about the platform, AI features, 
+                        or anything else. How can I help you?
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Ask me anything..." 
+                       onkeypress="handleChatKey(event)">
+                <button onclick="sendChatMessage()">Send</button>
+            </div>
+        </div>
+        
+        <!-- Pricing -->
+        <div class="pricing-section">
+            <h2 style="margin-bottom: 20px;">Simple, Transparent Pricing</h2>
+            <div class="pricing-card">
+                <div class="pricing-amount">$799</div>
+                <div class="pricing-period">Lifetime License — One-time payment</div>
+                <p style="color: #aaa; margin: 20px 0;">
+                    • Unlimited AI conversations<br>
+                    • All open-source LLM models included<br>
+                    • Private server — your data stays yours<br>
+                    • Blockchain-secured license (never lost)<br>
+                    • Lifetime updates and support<br>
+                    • Full API access<br>
+                    • Multi-user support
+                </p>
+                <a href="#buy" class="cta-button">Get QFit.space — $799 Lifetime</a>
+            </div>
+        </div>
+        
+        <!-- Tech Stack -->
+        <div class="tech-stack">
+            <div class="tech-item">
+                <div class="tech-name">Strap 722</div>
+                <div class="tech-desc">Crypto Network</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">AWS EC2</div>
+                <div class="tech-desc">VPS Hosting</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">Ollama</div>
+                <div class="tech-desc">Local LLM</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">Cloudflare</div>
+                <div class="tech-desc">Tunnel / CDN</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">LHS Network</div>
+                <div class="tech-desc">Mesh Protocol</div>
+            </div>
+            <div class="tech-item">
+                <div class="tech-name">S3</div>
+                <div class="tech-desc">Encrypted Backup</div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer>
+            <p>QFit.space — AI Chatbot SaaS on Strap 722 Crypto Network</p>
+            <p style="margin-top: 10px;">$799 Lifetime License · Private Infrastructure · Never Lost Work</p>
+            <p style="margin-top: 20px; font-size: 0.8rem;">
+                © 2026 QFit.space. All rights reserved. Running on Strap 722 blockchain.
+            </p>
+        </footer>
+    </div>
+    
+    <script>
+        // Chat demo functionality
+        const chatWindow = document.getElementById('chatWindow');
+        const chatInput = document.getElementById('chatInput');
+        
+        const botResponses = [
+            "That's a great question! QFit.space is a private AI chatbot SaaS that runs on your own server. Your data never leaves your infrastructure, and it's secured by the Strap 722 blockchain.",
+            "I'm powered by open-source LLMs like Llama 3, Mistral, and Phi-3. All inference happens locally on your server — no API costs, no data leaving your machine.",
+            "The $799 lifetime license gives you permanent access to all features. No subscription, no monthly fees. Pay once and use forever on your private server.",
+            "QFit.space runs on the Strap 722 crypto network. Your license and data are recorded on the blockchain, ensuring your work is never lost — immutable and secure.",
+            "You can switch between different AI models anytime. Llama 3 for general tasks, Mistral for reasoning, Phi-3 for quick queries. All run locally.",
+            "Your data privacy is our priority. QFit.space runs on private AWS VPS servers with Cloudflare tunneling. Nothing is exposed to the public internet without your consent.",
+            "The LHS network protocol connects all your servers seamlessly. Even if one node goes down, the network continues working — resilient by design.",
+            "I can help you with: platform questions, AI feature explanations, technical support, or just casual conversation. What would you like to know?"
+        ];
+        
+        function addMessage(text, type) {
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.innerHTML = `<div class="message-content">${text}</div>`;
+            chatWindow.appendChild(msg);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+        
+        function sendChatMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            
+            addMessage(text, 'user');
+            chatInput.value = '';
+            
+            // Simulate bot response
+            setTimeout(() => {
+                const response = botResponses[Math.floor(Math.random() * botResponses.length)];
+                addMessage(response, 'bot');
+            }, 800 + Math.random() * 700);
+        }
+        
+        function handleChatKey(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -930,16 +930,16 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="LHS — Left-Hand Side Network Node")
-    parser.add_argument("--port", type=int, default=LHS_PORT)
+    parser.add_argument("--port", type=int, default=7220)
     parser.add_argument("--api-port", type=int, default=8080)
     parser.add_argument("--mode", choices=["auto", "internet", "offline"], default="auto")
-    parser.add_argument("--data-dir", type=str, default=LHS_DATA_DIR)
+    parser.add_argument("--data-dir", type=str, default="/opt/strap722/data")
     parser.add_argument("--no-internet", action="store_true", help="Start in offline mode")
     args = parser.parse_args()
 
     global LHS_PORT
-global LHS_DATA_DIR
-global LHS_STARTUP_MODE
+    global LHS_DATA_DIR
+    global LHS_STARTUP_MODE
 
     LHS_PORT = args.port
     LHS_DATA_DIR = args.data_dir
