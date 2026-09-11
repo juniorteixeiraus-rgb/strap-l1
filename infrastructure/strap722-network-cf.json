@@ -366,6 +366,42 @@
           }
         ]
       }
+    },
+    "S3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "strap722-state-903804972035-1789156871",
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": {
+            "Rules": [
+              {
+                "ApplyServerSideEncryptionByDefault": {
+                  "SSEAlgorithm": "AES256"
+                }
+              }
+            ]
+          }
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Strap722State"
+          },
+          {
+            "Key": "Project",
+            "Value": "Strap722"
+          }
+        ]
+      }
     }
   },
   "Outputs": {
@@ -407,6 +443,10 @@
           "PrivateIp"
         ]
       }
+    },
+    "S3BucketName": {
+      "Description": "S3 Bucket for state storage",
+      "Value": "strap722-state-903804972035-1789156871"
     }
   }
 }
