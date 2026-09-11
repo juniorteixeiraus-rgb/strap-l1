@@ -18,7 +18,7 @@ import boto3
 from botocore.exceptions import ClientError
 
 AWS_REGION = "us-east-1"
-PROFILE = "722strap"
+PROFILE = "admin"
 CF_STACK_NAME = "strap722-network"
 CF_TEMPLATE = "/tmp/strap722-cf.json"
 
@@ -51,15 +51,8 @@ def main():
     out, code = run(["/tmp/awscli/aws/dist/aws", "sts", "get-caller-identity", "--profile", PROFILE], timeout=30)
     if code != 0 or "Account" not in out:
         print(f"{Bcolors.WARN}[!] AWS credentials not available")
-        print(f"   Run: /tmp/awscli/aws/dist/aws sso login --profile {PROFILE}")
-        print(f"   Then complete browser login, then re-run this script")
-        print()
-        print("Alternative: Deploy CloudFormation manually with AWS console")
-        print(f"  aws cloudformation create-stack \\")
-        print(f"    --stack-name {CF_STACK_NAME} \\")
-        print(f"    --template-body file://{CF_TEMPLATE} \\")
-        print(f"    --capabilities CAPABILITY_IAM \\")
-        print(f"    --profile {PROFILE}")
+        print(f"   Check ~/.aws/credentials has [{PROFILE}] profile")
+        print(f"   Or set AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY env vars")
         return False
 
     identity = json.loads(out)
