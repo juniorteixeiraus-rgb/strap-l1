@@ -44,7 +44,10 @@ TOKEN_DECIMALS = 9             # Solana standard (9 decimals)
 TOKEN_URI = "https://strap.l1/token/$STP"  # metadata URI
 TOKEN_DESCRIPTION = "Strap L1 Proof-of-Service token — 1B supply, PoUW mining, 7 AI agents, Telegram-native economy"
 
-SOLANA_KEYPAIR = os.environ.get("SOLANA_KEYPAIR", "./solana-id.json")
+# Community wallet: CrCiFTjbisQRPTfiBzgMR454WTr8vaTpbykXNRUejA81
+# Digital OS vision: $STP as currency of a Meta-like billion-dollar digital platform
+
+SOLANA_KEYPAIR = os.environ.get("SOLANA_KEYPAIR", "./solana-id-user.json")
 SECONDS_BETWEEN_TX = 3  # wait between transactions to avoid rate limits
 
 
@@ -120,18 +123,17 @@ def check_balance(network: str) -> float:
 # ── Airdrop (devnet only) ──────────────────────────────────────────────────
 
 def airdrop_sol(network: str, amount_lamports: int = 1_000_000_000) -> bool:
-    """Request SOL airdrop on devnet."""
+    """Request SOL airdrop on devnet using solana CLI (not spl-token)."""
     if network != "devnet":
         log("Airdrop only available on devnet")
         return False
 
-    # solana airdrop 1 (not spl-token)
-    cmd = ["solana", "config", "set", "--keypair", SOLANA_KEYPAIR, "--url", f"https://api.{network}.solana.com"]
-    os.system(" ".join(cmd) + " >/dev/null 2>&1")
-
     import subprocess
     try:
-        result = subprocess.run(["solana", "airdrop", str(amount_lamports)], capture_output=True, text=True, timeout=30)
+        result = subprocess.run(
+            ["solana", "airdrop", str(amount_lamports)],
+            capture_output=True, text=True, timeout=30
+        )
         out = result.stdout + result.stderr
         log(f"Airdrop output: {out.strip()}")
         for line in out.split("\n"):
@@ -141,7 +143,10 @@ def airdrop_sol(network: str, amount_lamports: int = 1_000_000_000) -> bool:
             if "rate limit" in line.lower() or "failed" in line.lower() or "Error" in line:
                 log(f"Airdrop failed: {line.strip()}")
                 return False
-        return "Success" in out or "success" in out.lower()
+        # Check return code as fallback
+        if result.returncode == 0 and ("Success" in out or "success" in out.lower()):
+            return True
+        return False
     except Exception as e:
         log(f"Airdrop error: {e}")
         return False

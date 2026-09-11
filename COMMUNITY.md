@@ -1,14 +1,17 @@
 # Strap ($STP) — Community Project
 ## Proof-of-Service L1 Blockchain + Solana SPL Token + Telegram Economy
 
-Welcome to Strap. This is a Proof-of-Service Layer 1 blockchain with:
-- **Proof-of-Useful-Work (PoUW)** mining — useful compute earns $STP
-- **7 AI agents** (mark, sheylla, billie, legative, newbi, nurio) working together
-- **Telegram-native economy** — bot + mini app as the main interface
-- **$STP token** — 1 billion supply, deployed on Solana SPL
-- **Strap L1 chain** — independent Rust chain running on VPS
-- **Bridge anchor to Base** — chain state hashed + anchored to Base for "unbreakable" security
-- **Multi-node ready** — decentralized architecture from day one
+Welcome to Strap. This is a Proof-of-Service Layer 1 blockchain building toward a **digital OS ecosystem** like Meta — where $STP becomes the native currency of a billion-dollar digital platform.
+
+|- **Proof-of-Useful-Work (PoUW)** mining — useful compute earns $STP
+|- **7 AI agents** (mark, sheylla, billie, legative, newbi, nurio) working together
+|- **Telegram-native economy** — bot + mini app as the main interface
+|- **$STP token** — 1 billion supply, deployed on Solana SPL
+|- **Strap L1 chain** — independent Rust chain running on VPS
+|- **Bridge anchor to Base** — chain state hashed + anchored to Base for "unbreakable" security
+|- **Multi-node ready** — decentralized architecture from day one
+|- **Digital OS vision** — $STP as the currency of a Meta-like digital platform
+|- **Community wallet**: `CrCiFTjbisQRPTfiBzgMR454WTr8vaTpbykXNRUejA81`
 
 ---
 
