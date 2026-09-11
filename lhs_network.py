@@ -43,7 +43,7 @@ LHS_DATA_DIR = os.environ.get("LHS_DATA_DIR", "./lhs-data")
 LHS_BLOCK_INTERVAL = int(os.environ.get("LHS_BLOCK_INTERVAL", "30"))  # seconds
 LHS_PEER_TIMEOUT = int(os.environ.get("LHS_PEER_TIMEOUT", "300"))  # seconds
 LHS_MAX_PEERS = int(os.environ.get("LHS_MAX_PEERS", "20"))
-LHS_LISTEN Backlog = int(os.environ.get("LHS_LISTEN_BACKLOG", "10"))
+LHS_LISTEN_BACKLOG = int(os.environ.get("LHS_LISTEN_BACKLOG", "10"))
 LHS_STARTUP_MODE = os.environ.get("LHS_STARTUP_MODE", "auto")  # auto, internet, offline
 
 # ── Data Types ─────────────────────────────────────────────────────────────
@@ -937,7 +937,9 @@ def main():
     parser.add_argument("--no-internet", action="store_true", help="Start in offline mode")
     args = parser.parse_args()
 
-    global LHS_PORT, LHS_DATA_DIR, LHS_STARTUP_MODE
+    global LHS_PORT
+global LHS_DATA_DIR
+global LHS_STARTUP_MODE
 
     LHS_PORT = args.port
     LHS_DATA_DIR = args.data_dir
