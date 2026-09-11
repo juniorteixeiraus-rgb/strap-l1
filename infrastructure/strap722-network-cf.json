@@ -1,18 +1,24 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "STRAP 722 — Decentralized Blockchain Network on AWS",
+  "Description": "STRAP 722 - Decentralized Blockchain Network on AWS",
   "Parameters": {
     "InstanceType": {
       "Type": "String",
-      "Default": "t3.medium",
-      "AllowedValues": ["t3.micro", "t3.small", "t3.medium", "t3.large", "t3.xlarge"],
+      "Default": "t3.micro",
+      "AllowedValues": [
+        "t3.micro",
+        "t3.small",
+        "t3.medium",
+        "t3.large",
+        "t3.xlarge"
+      ],
       "Description": "EC2 instance type for 722 nodes"
     },
     "NodeCount": {
       "Type": "Number",
-      "Default": "1",
-      "MinValue": "1",
-      "MaxValue": "10",
+      "Default": 1,
+      "MinValue": 1,
+      "MaxValue": 10,
       "Description": "Number of 722 nodes to deploy"
     },
     "PublicKey": {
@@ -23,8 +29,11 @@
     "EnablePublicIP": {
       "Type": "String",
       "Default": "true",
-      "AllowedValues": ["true", "false"],
-      "Description": "Assign public IP to nodes (true = accessible from internet)"
+      "AllowedValues": [
+        "true",
+        "false"
+      ],
+      "Description": "Assign public IP to nodes"
     }
   },
   "Resources": {
@@ -36,108 +45,183 @@
         "EnableDnsHostnames": true,
         "InstanceTenancy": "default",
         "Tags": [
-          {"Key": "Name", "Value": "strap-722-vpc"},
-          {"Key": "Project", "Value": "Strap722"},
-          {"Key": "Environment", "Value": "production"}
+          {
+            "Key": "Name",
+            "Value": "strap-722-vpc"
+          },
+          {
+            "Key": "Project",
+            "Value": "Strap722"
+          },
+          {
+            "Key": "Environment",
+            "Value": "production"
+          }
         ]
       }
     },
     "InternetGateway": {
       "Type": "AWS::EC2::InternetGateway",
       "Properties": {
-        "Tags": [{"Key": "Name", "Value": "strap-722-igw"}]
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "strap-722-igw"
+          }
+        ]
       }
     },
     "VPCGatewayAttachment": {
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {
-        "VpcId": {"Ref": "VPC"},
-        "InternetGatewayId": {"Ref": "InternetGateway"}
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "InternetGatewayId": {
+          "Ref": "InternetGateway"
+        }
       }
     },
     "PublicSubnet1": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "VpcId": {"Ref": "VPC"},
+        "VpcId": {
+          "Ref": "VPC"
+        },
         "CidrBlock": "10.0.1.0/24",
-        "AvailabilityZone": {"Fn::Select": [0, {"Fn::GetAZs": {"Ref": "AWS::Region"}}]},
-        "MapPublicIpOnLaunch": {"Ref": "EnablePublicIP"},
-        "Tags": [{"Key": "Name", "Value": "strap-722-public-1"}]
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": {
+                "Ref": "AWS::Region"
+              }
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": {
+          "Ref": "EnablePublicIP"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "strap-722-public-1"
+          }
+        ]
       }
     },
     "PublicSubnet2": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "VpcId": {"Ref": "VPC"},
+        "VpcId": {
+          "Ref": "VPC"
+        },
         "CidrBlock": "10.0.2.0/24",
-        "AvailabilityZone": {"Fn::Select": [1, {"Fn::GetAZs": {"Ref": "AWS::Region"}}]},
-        "MapPublicIpOnLaunch": {"Ref": "EnablePublicIP"},
-        "Tags": [{"Key": "Name", "Value": "strap-722-public-2"}]
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": {
+                "Ref": "AWS::Region"
+              }
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": {
+          "Ref": "EnablePublicIP"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "strap-722-public-2"
+          }
+        ]
       }
     },
     "PublicRouteTable": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
-        "VpcId": {"Ref": "VPC"},
-        "Tags": [{"Key": "Name", "Value": "strap-722-public-rt"}]
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "strap-722-public-rt"
+          }
+        ]
       }
     },
     "PublicRoute": {
       "Type": "AWS::EC2::Route",
       "DependsOn": "VPCGatewayAttachment",
       "Properties": {
-        "RouteTableId": {"Ref": "PublicRouteTable"},
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        },
         "DestinationCidrBlock": "0.0.0.0/0",
-        "GatewayId": {"Ref": "InternetGateway"}
+        "GatewayId": {
+          "Ref": "InternetGateway"
+        }
       }
     },
     "PublicSubnet1RouteTableAssociation": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
-        "SubnetId": {"Ref": "PublicSubnet1"},
-        "RouteTableId": {"Ref": "PublicRouteTable"}
+        "SubnetId": {
+          "Ref": "PublicSubnet1"
+        },
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        }
       }
     },
     "PublicSubnet2RouteTableAssociation": {
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
-        "SubnetId": {"Ref": "PublicSubnet2"},
-        "RouteTableId": {"Ref": "PublicRouteTable"}
+        "SubnetId": {
+          "Ref": "PublicSubnet2"
+        },
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        }
       }
     },
     "SecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "STRAP 722 Node Security Group",
-        "VpcId": {"Ref": "VPC"},
+        "VpcId": {
+          "Ref": "VPC"
+        },
         "SecurityGroupIngress": [
           {
             "IpProtocol": "tcp",
             "FromPort": 22,
             "ToPort": 22,
             "CidrIp": "0.0.0.0/0",
-            "Description": "SSH access"
+            "Description": "SSH"
           },
           {
             "IpProtocol": "tcp",
             "FromPort": 8080,
             "ToPort": 8080,
             "CidrIp": "0.0.0.0/0",
-            "Description": "722 API server"
+            "Description": "722 API"
           },
           {
             "IpProtocol": "tcp",
             "FromPort": 7220,
             "ToPort": 7220,
             "CidrIp": "0.0.0.0/0",
-            "Description": "722 P2P network"
+            "Description": "722 P2P"
           },
           {
             "IpProtocol": "tcp",
             "FromPort": 7221,
             "ToPort": 7221,
             "CidrIp": "0.0.0.0/0",
-            "Description": "722 LHS discovery"
+            "Description": "722 LHS"
           },
           {
             "IpProtocol": "icmp",
@@ -147,7 +231,12 @@
             "Description": "Ping"
           }
         ],
-        "Tags": [{"Key": "Name", "Value": "strap-722-sg"}]
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "strap-722-sg"
+          }
+        ]
       }
     },
     "IAMRole": {
@@ -156,50 +245,37 @@
         "RoleName": "Strap722NodeRole",
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
-          "Statement": [{
-            "Effect": "Allow",
-            "Principal": {"Service": "ec2.amazonaws.com"},
-            "Action": "sts:AssumeRole"
-          }]
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
         },
         "ManagedPolicyArns": [
           "arn:aws:iam::aws:policy/AmazonS3FullAccess",
           "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
           "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
         ],
-        "Tags": [{"Key": "Name", "Value": "Strap722NodeRole"}]
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Strap722NodeRole"
+          }
+        ]
       }
     },
     "IAMInstanceProfile": {
       "Type": "AWS::IAM::InstanceProfile",
       "Properties": {
         "InstanceProfileName": "Strap722NodeProfile",
-        "Roles": [{"Ref": "IAMRole"}]
-      }
-    },
-    "S3Bucket": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketName": {"Fn::Sub": "strap722-state-${AWS::AccountId}-${AWS::Region}"},
-        "VersioningConfiguration": {"Status": "Enabled"},
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": {
-            "Rules": [{
-              "ApplyServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "AES256"
-              }
-            }]
+        "Roles": [
+          {
+            "Ref": "IAMRole"
           }
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true
-        },
-        "Tags": [
-          {"Key": "Name", "Value": "Strap722State"},
-          {"Key": "Project", "Value": "Strap722"}
         ]
       }
     },
@@ -209,28 +285,61 @@
         "LaunchTemplateName": "Strap722Node",
         "LaunchTemplateData": {
           "ImageId": "ami-0c02fb55956c7d316",
-          "InstanceType": {"Ref": "InstanceType"},
-          "IamInstanceProfile": {"Name": {"Ref": "IAMInstanceProfile"}},
-          "SecurityGroupIds": [{"Ref": "SecurityGroup"}],
+          "InstanceType": {
+            "Ref": "InstanceType"
+          },
+          "IamInstanceProfile": {
+            "Name": {
+              "Ref": "IAMInstanceProfile"
+            }
+          },
+          "SecurityGroupIds": [
+            {
+              "Ref": "SecurityGroup"
+            }
+          ],
           "UserData": {
             "Fn::Base64": {
-              "Fn::Sub": "#!/bin/bash\nset -e\nyum update -y\nyum install -y python3 python3-pip git curl wget tar gzip\npip3 install boto3 requests\nmkdir -p /opt/strap722/data /opt/strap722/logs\ncat > /opt/strap722/start_node.sh << 'INNEREOF'\n#!/bin/bash\npython3 /opt/strap722/lhs_network.py --port 7220 --api-port 8080 --data-dir /opt/strap722/data --mode auto\nINNEREOF\nchmod +x /opt/strap722/start_node.sh\ncat > /etc/systemd/system/strap722-node.service << 'SVCEOF'\n[Unit]\nDescription=STRAP 722 Node\nAfter=network.target\n[Service]\nType=simple\nUser=ec2-user\nWorkingDirectory=/opt/strap722\nExecStart=/opt/strap722/start_node.sh\nRestart=on-failure\nRestartSec=10\nEnvironment=LHS_PORT=7220\nEnvironment=LHS_API_PORT=8080\nEnvironment=LHS_DATA_DIR=/opt/strap722/data\nEnvironment=LHS_LOG_LEVEL=INFO\n[Install]\nWantedBy=multi-user.target\nSVCEOF\nsystemctl daemon-reload\nsystemctl enable strap722-node\nsystemctl start strap722-node\necho '722 node started'\n"}
-          },
-          "BlockDeviceMappings": [{
-            "DeviceName": "/dev/xvda",
-            "Ebs": {
-              "VolumeSize": 50,
-              "VolumeType": "gp3",
-              "Encrypted": true
+              "Fn::Join": [
+                "\n",
+                [
+                  "#!/bin/bash",
+                  "set -e",
+                  "yum update -y",
+                  "yum install -y python3 python3-pip git curl wget tar gzip",
+                  "pip3 install boto3 requests",
+                  "mkdir -p /opt/strap722/data /opt/strap722/logs",
+                  "cat > /opt/strap722/start_node.sh << 'INNEREOF'",
+                  "#!/bin/bash",
+                  "python3 /opt/strap722/lhs_network.py --port 7220 --api-port 8080 --data-dir /opt/strap722/data --mode auto",
+                  "INNEREOF",
+                  "chmod +x /opt/strap722/start_node.sh",
+                  "cat > /etc/systemd/system/strap722-node.service << 'SVCEOF'",
+                  "[Unit]",
+                  "Description=STRAP 722 Node",
+                  "After=network.target",
+                  "[Service]",
+                  "Type=simple",
+                  "User=ec2-user",
+                  "WorkingDirectory=/opt/strap722",
+                  "ExecStart=/opt/strap722/start_node.sh",
+                  "Restart=on-failure",
+                  "RestartSec=10",
+                  "Environment=LHS_PORT=7220",
+                  "Environment=LHS_API_PORT=8080",
+                  "Environment=LHS_DATA_DIR=/opt/strap722/data",
+                  "Environment=LHS_LOG_LEVEL=INFO",
+                  "[Install]",
+                  "WantedBy=multi-user.target",
+                  "SVCEOF",
+                  "systemctl daemon-reload",
+                  "systemctl enable strap722-node",
+                  "systemctl start strap722-node",
+                  "echo '722 node started'"
+                ]
+              ]
             }
-          }],
-          "TagSpecifications": [{
-            "ResourceType": "instance",
-            "Tags": [
-              {"Key": "Name", "Value": "strap722-node"},
-              {"Key": "Project", "Value": "Strap722"}
-            ]
-          }]
+          }
         }
       }
     },
@@ -238,84 +347,66 @@
       "Type": "AWS::EC2::Instance",
       "Properties": {
         "LaunchTemplate": {
-          "LaunchTemplateId": {"Ref": "NodeLaunchTemplate"},
-          "Version": "$Latest"
+          "LaunchTemplateId": {
+            "Ref": "NodeLaunchTemplate"
+          },
+          "Version": "1"
         },
-        "SubnetId": {"Ref": "PublicSubnet1"},
+        "SubnetId": {
+          "Ref": "PublicSubnet1"
+        },
         "Tags": [
-          {"Key": "Name", "Value": "strap722-node-1"},
-          {"Key": "Role", "Value": "block-producer"}
+          {
+            "Key": "Name",
+            "Value": "strap722-node-1"
+          },
+          {
+            "Key": "Role",
+            "Value": "block-producer"
+          }
         ]
-      }
-    },
-    "CloudWatchAlarmStatus": {
-      "Type": "AWS::CloudWatch::Alarm",
-      "Properties": {
-        "AlarmName": "strap722-node-status",
-        "AlarmDescription": "Alert when EC2 status check fails",
-        "MetricName": "StatusCheckFailed",
-        "Namespace": "AWS/EC2",
-        "Statistic": "Average",
-        "Period": 60,
-        "EvaluationPeriods": 1,
-        "Threshold": 1,
-        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "Dimensions": [{
-          "Name": "InstanceId",
-          "Value": {"Ref": "Node1"}
-        }],
-        "AlarmActions": [],
-        "OkActions": []
-      }
-    },
-    "CloudWatchAlarmCPU": {
-      "Type": "AWS::CloudWatch::Alarm",
-      "Properties": {
-        "AlarmName": "strap722-cpu-high",
-        "AlarmDescription": "Alert when CPU exceeds 80%",
-        "MetricName": "CPUUtilization",
-        "Namespace": "AWS/EC2",
-        "Statistic": "Average",
-        "Period": 300,
-        "EvaluationPeriods": 3,
-        "Threshold": 80,
-        "ComparisonOperator": "GreaterThanThreshold",
-        "Dimensions": [{
-          "Name": "InstanceId",
-          "Value": {"Ref": "Node1"}
-        }],
-        "AlarmActions": []
       }
     }
   },
   "Outputs": {
     "VPCId": {
       "Description": "VPC ID",
-      "Value": {"Ref": "VPC"}
+      "Value": {
+        "Ref": "VPC"
+      }
     },
     "Subnet1Id": {
       "Description": "Public Subnet 1 ID",
-      "Value": {"Ref": "PublicSubnet1"}
+      "Value": {
+        "Ref": "PublicSubnet1"
+      }
     },
     "Subnet2Id": {
       "Description": "Public Subnet 2 ID",
-      "Value": {"Ref": "PublicSubnet2"}
+      "Value": {
+        "Ref": "PublicSubnet2"
+      }
     },
     "SecurityGroupId": {
       "Description": "Security Group ID",
-      "Value": {"Ref": "SecurityGroup"}
-    },
-    "S3BucketName": {
-      "Description": "S3 Bucket for state storage",
-      "Value": {"Ref": "S3Bucket"}
+      "Value": {
+        "Ref": "SecurityGroup"
+      }
     },
     "Node1InstanceId": {
       "Description": "Node 1 Instance ID",
-      "Value": {"Ref": "Node1"}
+      "Value": {
+        "Ref": "Node1"
+      }
     },
     "Node1PrivateIp": {
       "Description": "Node 1 Private IP",
-      "Value": {"Fn::GetAtt": ["Node1", "PrivateIp"]}
+      "Value": {
+        "Fn::GetAtt": [
+          "Node1",
+          "PrivateIp"
+        ]
+      }
     }
   }
 }
