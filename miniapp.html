@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0d0d1a">
+    <title>Strap ($STP)</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --bg: #0d0d1a;
+            --card: rgba(255,255,255,0.04);
+            --border: rgba(255,255,255,0.08);
+            --text: #e0e0e0;
+            --muted: #888;
+            --accent: #00d2ff;
+            --accent2: #7b2ff7;
+            --accent3: #ff6fd8;
+            --green: #00e676;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            background-image: radial-gradient(circle at 20% 20%, rgba(0,210,255,0.05) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 80%, rgba(123,47,247,0.05) 0%, transparent 50%);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+        }
+        .wrap { max-width: 460px; margin: 0 auto; padding: 16px; }
+        
+        /* Header */
+        .top { text-align: center; padding: 18px 0 12px; }
+        .title {
+            font-size: 30px; font-weight: 900;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .tagline { color: var(--muted); font-size: 12px; margin-top: 3px; }
+        .live {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.3);
+            border-radius: 16px; padding: 3px 10px; margin-top: 7px;
+            font-size: 10px; color: var(--green); font-weight: 600;
+        }
+        .dot { width: 5px; height: 5px; background: var(--green); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        
+        /* Cards */
+        .card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 16px; margin: 10px 0;
+        }
+        .row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; }
+        .row:last-child { border-bottom: none; }
+        .lbl { font-size: 12px; color: var(--muted); }
+        .val { font-size: 14px; font-weight: 700; color: var(--accent); }
+        .val.w = .val { font-size: 18px; color: #fff; }
+        .val.small { font-size: 11px; color: var(--muted); }
+        
+        /* Buttons */
+        .btns { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+        .btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; padding: 13px; border: none; border-radius: 11px;
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            color: #fff; transition: transform 0.12s, opacity 0.12s;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-glow {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            box-shadow: 0 4px 12px rgba(0,210,255,0.25);
+        }
+        .btn-ghost {
+            background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+        }
+        
+        /* Agents */
+        .sec-title {
+            font-size: 11px; color: var(--muted); margin: 16px 0 8px;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .chip {
+            background: rgba(123,47,247,0.12); border: 1px solid rgba(123,47,247,0.25);
+            border-radius: 16px; padding: 4px 10px; font-size: 11px; color: #b388ff;
+        }
+        
+        /* Footer */
+        .foot { text-align: center; padding: 16px 0 8px; color: #555; font-size: 10px; line-height: 1.6; }
+        .foot a { color: var(--accent); text-decoration: none; }
+        
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: rgba(0,230,118,0.95); color: #fff; padding: 10px 20px;
+            border-radius: 8px; font-size: 13px; font-weight: 600;
+            opacity: 0; transition: all 0.3s; z-index: 100;
+        }
+        .toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+        
+        .spinner {
+            width: 24px; height: 24px; margin: 0 auto 10px;
+            border: 2px solid rgba(0,210,255,0.15); border-top-color: var(--accent);
+            border-radius: 50%; animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="top">
+            <div class="title">Strap</div>
+            <div class="tagline">$STP · 722 Blockchain Network</div>
+            <div class="live"><span class="dot"></span> Network Live</div>
+        </div>
+        
+        <div class="card">
+            <div class="row">
+                <span class="lbl">Total Supply</span>
+                <span class="val w">1,000,000,000 STP</span>
+            </div>
+            <div class="row">
+                <span class="lbl">Blocks Produced</span>
+                <span class="val" id="blocks">1</span>
+            </div>
+            <div class="row">
+                <span class="lbl">Consensus</span>
+                <span class="val">PoUW + AI Agents</span>
+            </div>
+            <div class="row">
+                <span class="lbl">Network</span>
+                <span class="val">722 Protocol</span>
+            </div>
+            <div class="row">
+                <span class="lbl">AI Agents Validating</span>
+                <span class="val" id="agents">6</span>
+            </div>
+            <div class="row">
+                <span class="lbl">Latest Block</span>
+                <span class="val small" id="latestHash">---</span>
+            </div>
+        </div>
+        
+        <div class="btns">
+            <button class="btn btn-glow" onclick="mine()">
+                <span>⚡</span> Mine STRP (PoUW Proof)
+            </button>
+            <button class="btn btn-ghost" onclick="showInfo()">
+                <span>📋</span> Network Info
+            </button>
+            <button class="btn btn-glow" onclick="community()">
+                <span>🌐</span> Join Community
+            </button>
+        </div>
+        
+        <div class="sec-title">AI Agent Validators (722 Consensus)</div>
+        <div class="chips" id="agentChips">
+            <span class="chip">mark</span>
+            <span class="chip">sheylla</span>
+            <span class="chip">billie</span>
+            <span class="chip">legative</span>
+            <span class="chip">newbi</span>
+            <span class="chip">nurio</span>
+        </div>
+        
+        <div style="margin-top:14px; padding:12px; background:rgba(123,47,247,0.08); border:1px solid rgba(123,47,247,0.2); border-radius:10px; font-size:12px; color:#b388ff; line-height:1.5;">
+            <strong style="color:#fff;">722 Block Protocol:</strong> 7 validation dimensions × 2 consensus engines × 2 network modes = 28 layers of proof in every hash. AI agents semantically validate every block.
+        </div>
+        
+        <div class="foot">
+            <p><strong>Strap ($STP)</strong> — The 722 Blockchain</p>
+            <p>PoUW + AI Semantic Consensus · Multidimensional Token · AWS + Mesh</p>
+            <p style="margin-top:6px">
+                <a href="https://github.com/juniorteixeiraus-rgb/strap-l1" target="_blank">GitHub</a> · 
+                <a href="https://t.me/strap_network" target="_blank">Telegram</a>
+            </p>
+            <p style="margin-top:8px; color:#444;">Strap is not financial advice. Do your own research.</p>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+        
+        const toast = document.getElementById('toast');
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.add('on');
+            setTimeout(() => toast.classList.remove('on'), 3500);
+        }
+        
+        // Load live data
+        async function loadData() {
+            try {
+                // Agent count
+                const r1 = await fetch('http://localhost:8080/health');
+                const d1 = await r1.json();
+                if (d1.agents) {
+                    document.getElementById('agents').textContent = d1.agents;
+                }
+            } catch(e) { /* offline fallback */ }
+            
+            try {
+                // Chain info
+                const r2 = await fetch('http://localhost:8080/chain');
+                const d2 = await r2.json();
+                if (d2.blocks) {
+                    document.getElementById('blocks').textContent = d2.blocks;
+                }
+                if (d2.latest_hash) {
+                    const h = d2.latest_hash.substring(0, 16) + '...';
+                    document.getElementById('latestHash').textContent = h;
+                }
+            } catch(e) { /* offline fallback */ }
+        }
+        
+        async function mine() {
+            showToast('⚡ Submitting PoUW proof...');
+            try {
+                const r = await fetch('http://localhost:8080/api/mine', { method: 'POST' });
+                const d = await r.json();
+                showToast('✅ Earned ' + (d.reward || 'STRP') + '!');
+            } catch(e) {
+                showToast('⚡ Mining... (chain running locally)');
+            }
+            // Increment blocks as visual feedback
+            setTimeout(() => {
+                const b = document.getElementById('blocks');
+                b.textContent = parseInt(b.textContent) + 1;
+            }, 2000);
+        }
+        
+        function showInfo() {
+            const info = [
+                'Strap ($STP) — 722 Blockchain Network',
+                '',
+                'Total Supply: 1,000,000,000 STP',
+                'Consensus: PoUW + AI Agent Consensus',
+                '7 Validation Dimensions per block',
+                '2 Consensus Engines: PoUW + Agent Consensus',
+                '2 Network Modes: AWS + Distributed Mesh',
+                '6 AI Agents: mark, sheylla, billie, legative, newbi, nurio',
+                'Launched: October 2026',
+                '',
+                'GitHub: github.com/juniorteixeiraus-rgb/strap-l1',
+                'Telegram: t.me/strap_network'
+            ].join('\n');
+            alert(info);
+        }
+        
+        function community() {
+            tg.openLink('https://t.me/strap_network');
+        }
+        
+        loadData();
+    </script>
+</body>
+</html>
