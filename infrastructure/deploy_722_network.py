@@ -99,7 +99,7 @@ def main():
         response = cf.create_stack(
             StackName=CF_STACK_NAME,
             TemplateBody=template_body,
-            Capabilities=["CAPABILITY_IAM"],
+            Capabilities=["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM"],
             Tags=[
                 {"Key": "Project", "Value": "Strap722"},
                 {"Key": "Environment", "Value": "production"},
